@@ -1,0 +1,32 @@
+ # バージョンの指定
+version: "3.9"
+#格Dockerfileの指定
+services:
+   # Apache2/java用のコンテナ（webという名前は任意でつけたもの）
+   web:
+     build: ./web         #Dockerfileが格納されたフォルダの相対パス
+     image: "myimage:web" #設定したいコンテナイメージ名
+     ports:
+       - 80:80
+       - 443:443           #ポートフォワーディングの設定
+     links:
+       - "db:db_container" #このコンテナが依存するコンテナとそのコンテナ名の指定
+     container_name: "web_container" #このコンテナの名前の指定
+     
+     #MySQL用のコンテナ（dbという名前は任意で指定したもの）
+   db:
+     build: ./db
+     image: "myimage:db"
+     ports:
+       - 4306:3306
+     expose:
+       - 3306                   #ほかのコンテナと通信できるポート番号の指定
+     container_name: "db_container"
+     volumes:              # データの永続化の設定
+         - db_data:/var/lib/mysql       # ボリューム名:コンテナのディレクトリ
+
+#ボリュームの指定
+volumes:
+  db_data:
+   
+ 
